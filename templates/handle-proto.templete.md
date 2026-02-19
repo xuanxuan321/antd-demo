@@ -1,0 +1,83 @@
+# Handoff Protocol (Cross-Window Continuation)
+
+## 使用说明（模板）
+
+- 复制本文件为项目根目录 `handoff-protocol.md` 后再填写占位符。
+- 建议在 `MasterPlan.md` 与 `todo.md` 建好后再落地本文件，确保术语一致。
+- 本文件用于“如何接力”，不替代 `todo.md` 的任务状态真源职责。
+
+## 1. 目的
+
+当单次会话上下文不足时，保证任务可在新窗口持续推进，且不丢失进度、不重复返工、不偏离范围。
+
+## 2. 单一信息源约定
+
+- 任务状态唯一真源：`todo.md`
+- 范围与验收基线：`MasterPlan.md`
+- 协作流程标准：`handoff-protocol.md`（本文件）
+
+任何会话内口头计划，若未写入 `todo.md`，视为无效。
+
+## 3. 新窗口启动检查（必须执行）
+
+1. 阅读 `todo.md`，按固定优先级选择任务：`Doing` > `Block`（网络问题且未达 `Retry 2/2`） > 最靠前的 `Todo`。
+2. 快速核对 `MasterPlan.md`，确认未偏离固定范围与交互约束。
+3. 查看工作区改动（`git status`），避免覆盖已有在制修改。
+4. 在 `todo.md` 把将要处理的任务标记为 `Doing`（进行中）。
+5. 再开始编码与文件修改。
+
+## 4. 会话执行中的同步规则
+
+- 每完成一个明确子目标，立即更新 `todo.md`。
+- 若新发现任务，直接追加到对应里程碑，不等待会话结束。
+- 若发现阻塞，标记 `Block` 并写明 `Blocker`，同时给出替代可并行任务。
+- 网络类阻塞（超时、DNS、连接重置、网关错误等）允许重试，总计最多 2 次；达到 `Retry 2/2` 后不再重试。
+- 每次网络重试都必须在 `todo.md` 留痕：任务 ID、`Retry x/2`、结果、错误关键字或原因。
+- 网络重试上限耗尽后，保持 `Block` 并标注 `Retry Exhausted: 2/2`，随后切换到下一个 `Todo` 任务。
+- 任务执行顺序按固定优先级与里程碑共同决定：优先级先看 `Doing > 可重试网络 Block > Todo`，同优先级内按里程碑推进；如需跳序，必须在 `todo.md` 变更日志说明原因。
+
+## 5. 会话结束交接模板（必须落地到 todo.md 变更日志）
+
+每次窗口结束前追加以下信息：
+
+1. Completed:
+   - 已完成任务 ID 列表（例如 `{{TASK_ID}}, {{TASK_ID}}`）
+2. Files Changed:
+   - 关键文件路径列表（例如 `{{FILE_PATH_1}}`, `{{FILE_PATH_2}}`）
+3. Validation:
+   - 是否运行 `npm run lint` / `npm run build`，结果如何
+4. Risks / Blockers:
+   - 当前遗留风险或阻塞（可为空）
+   - 如发生网络重试，注明 `Retry x/2` 与是否已耗尽
+5. Next:
+   - 下一建议任务 ID（`{{NEXT_TASK_ID}}`，单个优先）
+
+## 6. 冲突与回滚原则
+
+- 禁止回滚不属于当前任务范围且非本人新增的改动。
+- 若发现与现有改动冲突，先在 `todo.md` 记录冲突点，再做最小化兼容修正。
+- 禁止使用破坏性命令（如 `git reset --hard`）处理交接问题。
+
+## 7. 质量门禁（交接前最小要求）
+
+至少满足以下其一才允许标记任务完成：
+
+- 该任务属于文档/结构任务，且文档已更新完整；
+- 或该任务属于代码任务，且本地验证通过（至少页面可访问且无明显运行错误）。
+
+若未达到门禁，保持 `Doing` 或 `Block`，不可标 `Done`。
+
+## 8. 与 MasterPlan / todo 的关系说明
+
+- `MasterPlan.md` 定义“做什么才算完成整个项目”。
+- `todo.md` 定义“当前窗口具体做哪一步，并记录进度”。
+- `handoff-protocol.md` 定义“窗口之间如何接力不丢上下文”。
+
+执行优先级：`todo.md` > `handoff-protocol.md` > `MasterPlan.md`。
+
+## 9. 占位符速查
+
+- 日期类：`{{LAST_UPDATED_YYYY_MM_DD}}`
+- 项目类：`{{PROJECT_NAME}}`、`{{SOURCE_DIR}}`、`{{TARGET_DIR}}`
+- 任务类：`{{TASK_ID}}`、`{{MILESTONE_ID}}`、`{{NEXT_TASK_ID}}`
+- 验收类：`{{ACCEPTANCE_ITEM}}`

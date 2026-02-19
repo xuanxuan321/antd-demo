@@ -71,3 +71,53 @@ export default defineConfig([
   },
 ])
 ```
+
+## E2E Baseline
+
+- Install browser once locally: `npx playwright install chromium`
+- Run E2E regression suite: `npm run test:e2e`
+- Run E2E in headed mode: `npm run test:e2e:headed`
+
+The CI workflow is in `.github/workflows/ci.yml` and runs `lint + build + playwright e2e` on `push` and `pull_request`.
+
+## Todo Autopilot
+
+项目提供两个 AI 驱动的 todo.md 自动执行脚本，它们以循环方式逐个执行 `todo.md` 中的任务，每轮启动全新会话。
+
+### Codex 版 (OpenAI Codex SDK)
+
+需要先通过 `codex` CLI 登录 ChatGPT。
+
+```bash
+# 执行所有任务
+npm run todo:autopilot
+
+# 带参数
+node scripts/todo-agent-loop.mjs [options]
+```
+
+### Claude 版 (Claude Agent SDK)
+
+需要先通过 `claude` CLI 登录。
+
+```bash
+# 执行所有任务
+npm run todo:claude
+
+# Dry-run（只识别不执行）
+npm run todo:claude:dry
+
+# 带参数
+node scripts/todo-claude-loop.mjs [options]
+```
+
+### 通用参数
+
+| 参数 | 说明 | 默认值 |
+|------|------|--------|
+| `--todo <path>` | todo.md 路径 | `./todo.md` |
+| `--workspace <path>` | 工作区根目录 | 当前目录 |
+| `--max-tasks <n>` | 最大执行轮次 | 不限 |
+| `--round-timeout-sec <n>` | 单轮超时秒数 | 900 |
+| `--codex-model <name>` | 模型覆盖 | — |
+| `--dry-run` | 只识别任务不执行 | — |

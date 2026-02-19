@@ -22,3 +22,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code Todo Loop
+.claude/logs/
+.claude/todo-loop.lock
+todo-claude-loop.log.md
+todo-agent-loop.log.md
+
+# Playwright artifacts
+playwright-report/
+test-results/
+blob-report/

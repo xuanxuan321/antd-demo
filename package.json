@@ -7,17 +7,31 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "todo:autopilot": "node scripts/todo-agent-loop.mjs",
+    "todo:autopilot:dry": "node scripts/todo-agent-loop.mjs --dry-run",
+    "todo:claude": "node scripts/todo-claude-loop.mjs",
+    "todo:claude:dry": "node scripts/todo-claude-loop.mjs --dry-run"
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
+    "@openai/agents": "^0.4.10",
+    "@openai/agents-extensions": "^0.4.10",
+    "@anthropic-ai/claude-agent-sdk": "^0.1.0",
+    "@openai/codex-sdk": "^0.101.0",
     "antd": "^6.3.0",
+    "echarts": "^6.0.0",
+    "echarts-for-react": "^3.0.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^7.13.0"
+    "react-router-dom": "^7.13.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.58.2",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
